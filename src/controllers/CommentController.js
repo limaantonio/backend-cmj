@@ -22,7 +22,7 @@ module.exports = {
       await post.save();
       
 
-      return response.status(201);
+      return response.status(201).json(post);
 
     }catch(err){
       return response.status(400).send({error: 'Error creating new Post'})

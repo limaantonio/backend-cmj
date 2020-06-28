@@ -16,7 +16,7 @@ module.exports = {
     try{
       const adm = await Adm.create(request.body);
 
-      return response.status(201);
+      return response.status(201).json(adm);
     }catch(err){
       return response.status(400).send({error: 'Error creating new Adm'})
     }   

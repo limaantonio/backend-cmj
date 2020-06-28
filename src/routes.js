@@ -17,11 +17,11 @@ const authStudentMiddleware = require('../src/middlewares/authStudent');
 const routes = express.Router();
 
 
-routes.post('/authenticate', authController.authenticate);
+routes.post('/authenticated', authController.authenticate);
 
-routes.post('/authenticateAdm', authControllerAdm.authenticate);
+routes.post('/authenticatedAdm', authControllerAdm.authenticate);
 
-routes.post('/authenticateStudent', authControllerStudent.authenticate);
+routes.post('/authenticatedStudent', authControllerStudent.authenticate);
 
 //ADM
 routes.post('/adm', AdmController.create);
@@ -45,7 +45,7 @@ routes.delete('/post/:id', authMiddleware,PostController.delete);
 routes.post('/post', authMiddleware, multer(multerConfig).single('file'), PostController.create);
 
 //LIKE
-routes.post('/post/:postId/like', PostController.like);
+routes.post('/post/:postId/like',authStudentMiddleware, PostController.like);
 
 //COMMENT
 routes.post('/post/:postId/comment',authStudentMiddleware, CommentController.create);
