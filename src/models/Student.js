@@ -38,7 +38,7 @@ const StudentSchema = new mongoose.Schema({
 
   avatar_url: {
     type: String,
-    require: true,
+    require: false,
   },
 
 
