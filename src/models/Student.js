@@ -36,10 +36,10 @@ const StudentSchema = new mongoose.Schema({
    
   },
 
-  avatar_url: {
-    type: String,
-    require: false,
-  },
+  // avatar_url: {
+  //   type: String,
+  //   require: false,
+  // },
 
 
   createdAt: {

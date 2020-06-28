@@ -45,8 +45,8 @@ module.exports = {
 
   async create (request, response){ 
     try{
-      const {location:  avatar_url = ''} = request.file;
-      const {location: img_url = ''} = request.file;
+      //const {location:  avatar_url = ''} = request.file;
+      
       const {name, email, password, fone} = request.body;
 
       const user = await Student.create({
@@ -54,7 +54,7 @@ module.exports = {
         email,
         password, 
         fone,
-        avatar_url
+     // avatar_url
 
       });
 
