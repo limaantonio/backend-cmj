@@ -9,6 +9,7 @@ const PostController = require('./controllers/PostController');
 const CommentController = require('./controllers/CommentController');
 const authController = require('./controllers/authController');
 const authControllerAdm = require('./controllers/authAdmController');
+const authControllerStudent = require('./controllers/authAdmController');
 const authMiddleware = require('../src/middlewares/auth');
 const authAdmMiddleware = require('../src/middlewares/auth');
 
@@ -18,6 +19,8 @@ const routes = express.Router();
 routes.post('/authenticate', authController.authenticate);
 
 routes.post('/authenticateAdm', authControllerAdm.authenticate);
+
+routes.post('/authenticateStudent', authControllerAdm.authenticate);
 
 //ADM
 routes.post('/adm', AdmController.create);
