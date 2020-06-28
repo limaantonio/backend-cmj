@@ -1,10 +1,10 @@
-const Adm = require('../models/Adm');
+const Student = require('../models/Student');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const mailer = require('../modules/mailer');
 
-const authConfig = require('../config/auth.json');
+const authConfig = require('../config/authStudent.json');
 
 function generateToken(params = {}){
   return jwt.sign(params, authConfig.secret, {
@@ -18,16 +18,16 @@ module.exports = {
     const {email} = request.body;
 
     try{
-      if(await Adm.findOne({email})){
-        return response.status(400).send({error: 'Adm already exists'})
+      if(await Student.findOne({email})){
+        return response.status(400).send({error: 'Student already exists'})
       }
-      const adm = await Adm.create(request.body);
+      const student = await Student.create(request.body);
 
-      adm.password = undefined;
+      student.password = undefined;
 
       return response.send({
-        adm,
-        token: generateToken({id: adm.id})
+        student,
+        token: generateToken({id: student.id})
         })
       
     }catch(err){
@@ -39,22 +39,22 @@ module.exports = {
      
       const {email, password} = request.body;
 
-     const adm = await Adm.findOne({email}).select('+password');
+     const student = await Student.findOne({email}).select('+password');
      
 
-     if(!adm){
-       return response.status(400).send({error: 'Adm not found'})
+     if(!student){
+       return response.status(400).send({error: 'Student not found'})
      }
 
-     if(!await bcrypt.compare(password, adm.password)){
+     if(!await bcrypt.compare(password, student.password)){
       return response.status(400).send({error: 'Invalid password'})
      }
 
-     adm.password = undefined;
+     student.password = undefined;
 
      response.send({
-       adm,
-      token: generateToken({id: adm.id})
+       student,
+      token: generateToken({id: student.id})
     })
    },
 
@@ -62,16 +62,16 @@ module.exports = {
      const {email} = request.body;
 
      try{
-      const adm = await Adm.findOne({email});
+      const Student = await Student.findOne({email});
 
-      if(!adm)
-        response.status(400).send({erro: 'Adm not found'});
+      if(!student)
+        response.status(400).send({erro: 'Student not found'});
       
         const token = crypto.randomBytes(20).toString('hex');
         const now = new Date();
         now.setHours(now.getHours() + 1);
 
-        await Adm.findByIdAndUpdate(adm.id, {
+        await Student.findByIdAndUpdate(Student.id, {
           '$set': {
             passwordResetToken: token,
             passwordResetExpires: now,
@@ -99,22 +99,22 @@ module.exports = {
      const {email, token, password} = request.body;
 
      try{
-      const adm = await Adm.findOne({email}).select('+passwordResetToken passwordResetExperis');
+      const student = await Student.findOne({email}).select('+passwordResetToken passwordResetExperis');
 
-      if(!adm){
-        return response.status(400).send({error: 'Adm not found'})
+      if(!student){
+        return response.status(400).send({error: 'Student not found'})
       }
-      if(token !== adm.passwordResetToken)
+      if(token !== student.passwordResetToken)
         return response.status(400).send({erros: 'Token invalid.'});
 
       const now = new Date();
 
-      if(now > adm.passwordResetExpires)
+      if(now > student.passwordResetExpires)
         return response.status(400).send({erros: 'Token expired.'});
 
-      adm.password = password;
+      student.password = password;
 
-      await adm.save();
+      await student.save();
 
       response.send();
  

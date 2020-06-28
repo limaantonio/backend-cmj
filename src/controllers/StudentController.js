@@ -58,10 +58,9 @@ module.exports = {
 
       });
 
-      return response.status(201).json(user);
+      return response.status(201);
 
     }catch(err){
-      console.log(err);
       return response.status(400).send({error: 'Error creating new Student'})
     }
     

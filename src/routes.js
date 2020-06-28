@@ -9,9 +9,10 @@ const PostController = require('./controllers/PostController');
 const CommentController = require('./controllers/CommentController');
 const authController = require('./controllers/authController');
 const authControllerAdm = require('./controllers/authAdmController');
-const authControllerStudent = require('./controllers/authAdmController');
+const authControllerStudent = require('./controllers/authStudentController');
 const authMiddleware = require('../src/middlewares/auth');
-const authAdmMiddleware = require('../src/middlewares/auth');
+const authAdmMiddleware = require('../src/middlewares/authAdm');
+const authStudentMiddleware = require('../src/middlewares/authStudent');
 
 const routes = express.Router();
 
@@ -20,7 +21,7 @@ routes.post('/authenticate', authController.authenticate);
 
 routes.post('/authenticateAdm', authControllerAdm.authenticate);
 
-routes.post('/authenticateStudent', authControllerAdm.authenticate);
+routes.post('/authenticateStudent', authControllerStudent.authenticate);
 
 //ADM
 routes.post('/adm', AdmController.create);
@@ -43,12 +44,11 @@ routes.delete('/post/:id', authMiddleware,PostController.delete);
 //routes.put('/teacher/:id', PostController.updateById);
 routes.post('/post', authMiddleware, multer(multerConfig).single('file'), PostController.create);
 
-
 //LIKE
 routes.post('/post/:postId/like', PostController.like);
 
 //COMMENT
-routes.post('/post/:postId/comment', CommentController.create);
+routes.post('/post/:postId/comment',authStudentMiddleware, CommentController.create);
 
 
 module.exports = routes;
