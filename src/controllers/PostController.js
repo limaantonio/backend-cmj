@@ -7,7 +7,7 @@ module.exports = {
     try{
       const posts =  await Post.find().populate(['Teacher', 'Comment']);
      
-      return response.send({posts})
+      return response.send(posts)
     }catch(err){
       return response.status(400).send({error: 'Error loading Posts.'})
     }
