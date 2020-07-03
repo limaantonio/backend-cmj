@@ -54,7 +54,7 @@ module.exports = {
 
      response.send({
        adm,
-      token: generateToken({id: adm.id})
+      tokenAdm: generateToken({id: adm.id})
     })
    },
 
@@ -96,10 +96,10 @@ module.exports = {
    },
 
    async reset_password(request, response){
-     const {email, token, password} = request.body;
+     const {email, tokenAdm, password} = request.body;
 
      try{
-      const adm = await Adm.findOne({email}).select('+passwordResetToken passwordResetExperis');
+      const adm = await Adm.findOne({email}).select('+passwordResetTokenAdm passwordResetExperis');
 
       if(!adm){
         return response.status(400).send({error: 'Adm not found'})

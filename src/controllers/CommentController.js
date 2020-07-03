@@ -8,10 +8,8 @@ module.exports = {
       const {id} = request.params;
       const {text} = request.body;
       
-      
       const post = await Post.findOne(id);
 
-      
       const comment = {
         author: request.studentId,
         text: text,
@@ -21,7 +19,9 @@ module.exports = {
 
       await post.save();
 
-      return response.status(201).json(comment);
+      await post.find().populate('Student');
+
+      return response.status(201).json(post);
 
     }catch(err){
       console.log(err);
