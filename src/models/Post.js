@@ -17,7 +17,21 @@ const PostSchema = new mongoose.Schema({
     require: true,
   },
 
- 
+  comments:[{
+      author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Student',
+        require: true,
+      },
+      text:{
+        type: String,
+       
+      }, 
+      date: {
+       type: Date,
+       default: Date.now(),
+      }
+  }],
 
   teacher: {
     type: mongoose.Schema.Types.ObjectId,
@@ -32,11 +46,6 @@ const PostSchema = new mongoose.Schema({
    
   },
 
-  comments:[{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Comment',
-    require: true
-  }],
 
 
   createdAt: {

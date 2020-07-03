@@ -45,9 +45,11 @@ module.exports = {
   async create (request, response){ 
     try{
       const user = await Teacher.create(request.body);
-
+    
+      console.log(user);
       return response.status(201).json(user);
     }catch(err){
+      console.log(err);
       return response.status(400).send({error: 'Error creating new Teacher'})
     }
          

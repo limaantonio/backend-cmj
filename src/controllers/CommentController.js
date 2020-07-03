@@ -1,31 +1,32 @@
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
+const Student = require('../models/Student');
 
 
 module.exports = {
-
-  async create (request, response){ 
+   async create (request, response){ 
     try{
       const {id} = request.params;
-      const {comment} = request.body;
+      const {text} = request.body;
+      
       
       const post = await Post.findOne(id);
 
-      const postComment = new Comment({...comment, post: post._id});
+      
+      const comment = {
+        author: request.studentId,
+        text: text,
+      }
 
-      await postComment.save();
-      
-      
-      post.comments.push(postComment);
-        
+      post.comments.push(comment);
 
       await post.save();
-      
 
-      return response.status(201).json(post);
+      return response.status(201).json(comment);
 
     }catch(err){
-      return response.status(400).send({error: 'Error creating new Post'})
+      console.log(err);
+      return response.status(400).send({error: 'Error creating new Comment'})
     }
          
   },

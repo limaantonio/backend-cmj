@@ -5,7 +5,7 @@ const Teacher = require('../models/Teacher');
 module.exports = {
   async index (request, response){
     try{
-      const posts =  await Post.find().populate(['teacher', 'comments']);
+      const posts =  await Post.find().populate(['teacher']);
      
       return response.send(posts);
     }catch(err){

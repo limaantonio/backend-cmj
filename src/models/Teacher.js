@@ -14,6 +14,13 @@ const TeacherSchema = new mongoose.Schema({
     lowercase: true
   },
 
+  posts:[{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Post',
+    
+  }],
+
+
   password: {
     type: String,
     require: true,
@@ -29,12 +36,6 @@ const TeacherSchema = new mongoose.Schema({
     type: Date,
     select: false
   },
-
-  adm: {
-    type: Boolean,
-    require: true
-  },
-
 
   fone: {
     type: String,
