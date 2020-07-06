@@ -23,6 +23,9 @@ const PostSchema = new mongoose.Schema({
         ref: 'Student',
         require: true,
       },
+      nameAuthor:{
+        type: String
+      },
       text:{
         type: String,
        

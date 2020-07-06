@@ -1,14 +1,21 @@
 const Post = require('../models/Post');
 const Teacher = require('../models/Teacher');
-
+const Student = require('../models/Student');
 
 module.exports = {
   async index (request, response){
     try{
-      const posts =  await Post.find().populate(['teacher']);
+      const posts =  await Post.find().populate('teacher');
+
+      const names = [];
      
-      return response.send(posts);
+     
+      
+     
+     
+      return response.json(posts);
     }catch(err){
+      console.log(err)
       return response.status(400).send({error: 'Error loading Posts.'})
     }
   },
@@ -52,6 +59,8 @@ module.exports = {
           teacher: request.teacherId,
           likes
         });
+      
+     
 
       return response.status(201).json(post);
 

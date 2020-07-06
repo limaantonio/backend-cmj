@@ -10,16 +10,20 @@ module.exports = {
       
       const post = await Post.findOne(id);
 
+   
+      const student = await Student.findById(request.studentId);
+     
+
+
       const comment = {
         author: request.studentId,
         text: text,
+        nameAuthor: student.name
       }
 
       post.comments.push(comment);
 
       await post.save();
-
-      await post.find().populate('Student');
 
       return response.status(201).json(post);
 
