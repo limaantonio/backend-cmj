@@ -5,13 +5,7 @@ const Student = require('../models/Student');
 module.exports = {
   async index (request, response){
     try{
-      const posts =  await Post.find().populate('teacher');
-
-      const names = [];
-     
-     
-      
-     
+      const posts =  await Post.find().populate('teacher')
      
       return response.json(posts);
     }catch(err){
@@ -59,12 +53,15 @@ module.exports = {
           teacher: request.teacherId,
           likes
         });
+
+        console.log(img_url)
       
      
 
       return response.status(201).json(post);
 
     }catch(err){
+      console.log(err)
       return response.status(400).send({error: 'Error creating new Post'})
     }
   },
