@@ -27,7 +27,7 @@ module.exports = {
 
       return response.send({
         teacher,
-        token: generateToken({id: teacher.id})
+        tokenTeacher: generateToken({id: teacher.id})
         })
       
     }catch(err){
@@ -54,7 +54,7 @@ module.exports = {
 
      response.send({
        teacher,
-      token: generateToken({id: teacher.id})
+       tokenTeacher: generateToken({id: teacher.id})
     })
    },
 
@@ -67,13 +67,13 @@ module.exports = {
       if(!teacher)
         response.status(400).send({erro: 'Teacher not found'});
       
-        const token = crypto.randomBytes(20).toString('hex');
+        const tokenTeacher = crypto.randomBytes(20).toString('hex');
         const now = new Date();
         now.setHours(now.getHours() + 1);
 
         await Teacher.findByIdAndUpdate(teacher.id, {
           '$set': {
-            passwordResetToken: token,
+            passwordResetToken: tokenTeacher,
             passwordResetExpires: now,
           }, 
         },{new: true, useFindAndModify: false});
@@ -82,7 +82,7 @@ module.exports = {
           to: email,
           from: 'antonio@gmail.com',
           template: 'auth/forgot_password',
-          context: {token},
+          context: {tokenTeacher},
         }, (err) => {
           if(err){
             return response.status(400).send({error: 'Cannot send forgot password email.'});
@@ -96,7 +96,7 @@ module.exports = {
    },
 
    async reset_password(request, response){
-     const {email, token, password} = request.body;
+     const {email, tokenTeacher, password} = request.body;
 
      try{
       const teacher = await Teacher.findOne({email}).select('+passwordResetToken passwordResetExperis');

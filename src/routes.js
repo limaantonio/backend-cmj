@@ -42,7 +42,7 @@ routes.post('/student', StudantController.create);
 routes.get('/posts', PostController.index);
 routes.delete('/post/:id', authMiddleware,PostController.delete);
 //routes.put('/teacher/:id', PostController.updateById);
-routes.post('/post',  multer(multerConfig).single('file'),PostController.create);
+routes.post('/post', authMiddleware, multer(multerConfig).single('file'), PostController.create);
 
 //LIKE
 routes.post('/post/:postId/like',authStudentMiddleware, PostController.like);

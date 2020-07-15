@@ -13,12 +13,12 @@ module.exports = (req, res, next) => {
     if(!(parts.length === 2))
      return res.status(401).send({error: 'Token error'});
 
-    const [scheme, token] = parts;
+    const [scheme, tokenStudent] = parts;
 
     if(!/^Bearer$/i.test(scheme))
-      return res.status(401).send({error: 'Token malformatted'});
+      return res.status(401).send({error: 'tokenStudent malformatted'});
 
-    jwt.verify(token, authStudentConfig.secret, (err, decoded) => {
+    jwt.verify(tokenStudent, authStudentConfig.secret, (err, decoded) => {
       if(err) return res.status(401).send({error: 'Token invalid'});
 
       req.studentId = decoded.id;
