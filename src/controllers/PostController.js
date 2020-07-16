@@ -70,11 +70,11 @@ module.exports = {
     try{
       const {id} = request.params;
 
-      const post = await Post.findOne(id);
+      const post = await Post.findById(id);
 
       post.likes++;
 
-      await Post.findOneAndUpdate(id, post);
+      await Post.findByIdAndUpdate(id, post);
 
       return response.json({"likes" : post.likes})
 

@@ -45,7 +45,7 @@ routes.delete('/post/:id', authMiddleware,PostController.delete);
 routes.post('/post', authMiddleware, multer(multerConfig).single('file'), PostController.create);
 
 //LIKE
-routes.post('/post/:postId/like',authStudentMiddleware, PostController.like);
+routes.post('/post/:id/like',authStudentMiddleware, PostController.like);
 
 //COMMENT
 routes.post('/post/:postId/comment',authStudentMiddleware, CommentController.create);
