@@ -14,6 +14,18 @@ module.exports = {
     }
   },
 
+    async indexById (request, response){
+    try{
+      const {id} = request.params;
+      const post =  await Post.findById(id).populate('teacher')
+     
+      return response.json(post);
+    }catch(err){
+      console.log(err)
+      return response.status(400).send({error: 'Error loading Post.'})
+    }
+  },
+
   async delete(request, response){
     const {id} = request.params;
     

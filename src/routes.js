@@ -40,6 +40,7 @@ routes.post('/student', StudantController.create);
 
 //POST
 routes.get('/posts', PostController.index);
+routes.get('/post/:id', PostController.indexById);
 routes.delete('/post/:id', authMiddleware,PostController.delete);
 //routes.put('/teacher/:id', PostController.updateById);
 routes.post('/post', authMiddleware, multer(multerConfig).single('file'), PostController.create);
