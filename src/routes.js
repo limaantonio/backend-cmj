@@ -48,7 +48,7 @@ routes.post('/post', authMiddleware, multer(multerConfig).single('file'), PostCo
 routes.post('/post/:id/like',authStudentMiddleware, PostController.like);
 
 //COMMENT
-routes.post('/post/:postId/comment',authStudentMiddleware, CommentController.create);
+routes.post('/post/:id/comment',authStudentMiddleware, CommentController.create);
 
 
 module.exports = routes;
