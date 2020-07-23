@@ -21,13 +21,13 @@ module.exports = {
       if(await Teacher.findOne({email})){
         return response.status(400).send({error: 'Teacher already exists'})
       }
-      const teacher = await Teacher.create(request.body);
+      const user = await Teacher.create(request.body);
 
-      teacher.password = undefined;
+      user.password = undefined;
 
       return response.send({
-        teacher,
-        tokenTeacher: generateToken({id: teacher.id})
+        user,
+        token: generateToken({id: user.id})
         })
       
     }catch(err){
@@ -39,22 +39,22 @@ module.exports = {
      
       const {email, password} = request.body;
 
-     const teacher = await Teacher.findOne({email}).select('+password');
+     const user = await Teacher.findOne({email}).select('+password');
      
 
-     if(!teacher){
+     if(!user){
        return response.status(400).send({error: 'Teacher not found'})
      }
 
-     if(!await bcrypt.compare(password, teacher.password)){
+     if(!await bcrypt.compare(password, user.password)){
       return response.status(400).send({error: 'Invalid password'})
      }
 
-     teacher.password = undefined;
+     user.password = undefined;
 
      response.send({
-       teacher,
-       tokenTeacher: generateToken({id: teacher.id})
+       user,
+       token: generateToken({id: user.id})
     })
    },
 
@@ -62,18 +62,18 @@ module.exports = {
      const {email} = request.body;
 
      try{
-      const teacher = await Teacher.findOne({email});
+      const user = await Teacher.findOne({email});
 
-      if(!teacher)
+      if(!user)
         response.status(400).send({erro: 'Teacher not found'});
       
-        const tokenTeacher = crypto.randomBytes(20).toString('hex');
+        const token = crypto.randomBytes(20).toString('hex');
         const now = new Date();
         now.setHours(now.getHours() + 1);
 
-        await Teacher.findByIdAndUpdate(teacher.id, {
+        await Teacher.findByIdAndUpdate(user.id, {
           '$set': {
-            passwordResetToken: tokenTeacher,
+            passwordResetToken: token,
             passwordResetExpires: now,
           }, 
         },{new: true, useFindAndModify: false});
@@ -82,7 +82,7 @@ module.exports = {
           to: email,
           from: 'antonio@gmail.com',
           template: 'auth/forgot_password',
-          context: {tokenTeacher},
+          context: {token},
         }, (err) => {
           if(err){
             return response.status(400).send({error: 'Cannot send forgot password email.'});
@@ -96,25 +96,25 @@ module.exports = {
    },
 
    async reset_password(request, response){
-     const {email, tokenTeacher, password} = request.body;
+     const {email, token, password} = request.body;
 
      try{
-      const teacher = await Teacher.findOne({email}).select('+passwordResetToken passwordResetExperis');
+      const user = await Teacher.findOne({email}).select('+passwordResetToken passwordResetExperis');
 
-      if(!teacher){
+      if(!user){
         return response.status(400).send({error: 'Teacher not found'})
       }
-      if(token !== teacher.passwordResetToken)
+      if(token !== user.passwordResetToken)
         return response.status(400).send({erros: 'Token invalid.'});
 
       const now = new Date();
 
-      if(now > teacher.passwordResetExpires)
+      if(now > user.passwordResetExpires)
         return response.status(400).send({erros: 'Token expired.'});
 
-      teacher.password = password;
+      user.password = password;
 
-      await teacher.save();
+      await user.save();
 
       response.send();
  

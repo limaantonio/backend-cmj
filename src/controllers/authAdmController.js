@@ -21,13 +21,13 @@ module.exports = {
       if(await Adm.findOne({email})){
         return response.status(400).send({error: 'Adm already exists'})
       }
-      const adm = await Adm.create(request.body);
+      const user = await Adm.create(request.body);
 
-      adm.password = undefined;
+      user.password = undefined;
 
       return response.send({
-        adm,
-        token: generateToken({id: adm.id})
+        user,
+        token: generateToken({id: user.id})
         })
       
     }catch(err){
@@ -39,22 +39,22 @@ module.exports = {
      
       const {email, password} = request.body;
 
-     const adm = await Adm.findOne({email}).select('+password');
+     const user = await Adm.findOne({email}).select('+password');
      
 
-     if(!adm){
+     if(!user){
        return response.status(400).send({error: 'Adm not found'})
      }
 
-     if(!await bcrypt.compare(password, adm.password)){
+     if(!await bcrypt.compare(password, user.password)){
       return response.status(400).send({error: 'Invalid password'})
      }
 
-     adm.password = undefined;
+     user.password = undefined;
 
      response.send({
-       adm,
-      tokenAdm: generateToken({id: adm.id})
+       user,
+      token: generateToken({id: user.id})
     })
    },
 
@@ -62,16 +62,16 @@ module.exports = {
      const {email} = request.body;
 
      try{
-      const adm = await Adm.findOne({email});
+      const user = await Adm.findOne({email});
 
-      if(!adm)
+      if(!user)
         response.status(400).send({erro: 'Adm not found'});
       
         const token = crypto.randomBytes(20).toString('hex');
         const now = new Date();
         now.setHours(now.getHours() + 1);
 
-        await Adm.findByIdAndUpdate(adm.id, {
+        await Adm.findByIdAndUpdate(user.id, {
           '$set': {
             passwordResetToken: token,
             passwordResetExpires: now,
@@ -96,25 +96,25 @@ module.exports = {
    },
 
    async reset_password(request, response){
-     const {email, tokenAdm, password} = request.body;
+     const {email, token, password} = request.body;
 
      try{
-      const adm = await Adm.findOne({email}).select('+passwordResetTokenAdm passwordResetExperis');
+      const user = await Adm.findOne({email}).select('+passwordResetTokenAdm passwordResetExperis');
 
-      if(!adm){
+      if(!user){
         return response.status(400).send({error: 'Adm not found'})
       }
-      if(token !== adm.passwordResetToken)
+      if(token !== user.passwordResetToken)
         return response.status(400).send({erros: 'Token invalid.'});
 
       const now = new Date();
 
-      if(now > adm.passwordResetExpires)
+      if(now > user.passwordResetExpires)
         return response.status(400).send({erros: 'Token expired.'});
 
-      adm.password = password;
+      user.password = password;
 
-      await adm.save();
+      await user.save();
 
       response.send();
  
