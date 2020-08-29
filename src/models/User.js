@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const TeacherSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
   name: {
     type: String,
     require: true,
@@ -14,6 +14,15 @@ const TeacherSchema = new mongoose.Schema({
     lowercase: true
   },
 
+  eAdmin: {
+    type: Number,
+    default: 0
+  },
+
+  type: {
+    type: String,
+    require: true,
+  },
   posts:[{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Post',
@@ -39,13 +48,13 @@ const TeacherSchema = new mongoose.Schema({
 
   fone: {
     type: String,
-    require: true,
+   
    
   },
 
   user_avatar: {
     type: String,
-    require: true,
+  
   },
 
   createdAt: {
@@ -57,7 +66,7 @@ const TeacherSchema = new mongoose.Schema({
 
 });
 
-TeacherSchema.pre('save', async function(next) {
+UserSchema.pre('save', async function(next) {
   const hash = await bcrypt.hash(this.password, 10);
   this.password = hash;
 
@@ -65,4 +74,4 @@ TeacherSchema.pre('save', async function(next) {
 
 })
 
-module.exports = mongoose.model('Teacher', TeacherSchema);
+module.exports = mongoose.model('User', UserSchema);

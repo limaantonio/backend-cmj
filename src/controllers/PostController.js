@@ -1,6 +1,6 @@
 const Post = require('../models/Post');
-const Teacher = require('../models/Teacher');
-const Student = require('../models/Student');
+const User = require('../models/User');
+
 
 module.exports = {
   async index (request, response){
@@ -31,9 +31,22 @@ module.exports = {
     
     const post = await Post.findById(id);
 
-    await post.deleteOne();
+    const idUser = request.userId;
+      
+    User.findOne({'_id': idUser}, 'type', async function (err, data){
+     if(err) return handleError(err);
 
-    return response.status(204).send();
+     const type = data.type;
+
+     if(type !== 'teacher')
+       return response.status(400).send({error: 'Only teachers can delete post.'})
+     else
+
+      await post.deleteOne();
+      return response.status(204).send();
+
+    });
+
   },
 
   async updateById (request, response){
@@ -58,20 +71,31 @@ module.exports = {
       const {location: img_url = ''} = request.file;
       const {title, body, likes} = request.body;
 
-      const post = await Post.create({
-          img_url, 
-          title,
-          body,
-          teacher: request.teacherId,
-          likes
-        });
-
-        console.log(img_url)
+      const id = request.userId;
       
-     
 
-      return response.status(201).json(post);
+       User.findOne({'_id': id}, 'type', async function (err, data){
+        if(err) return handleError(err);
 
+        const type = data.type;
+
+        if(type !== 'teacher'){
+      
+          return response.status(400).send({error: 'Only teachers can create posts.'})
+        }else{
+          const post = await  Post.create({
+            img_url, 
+            title,
+            body,
+            user: request.userId,
+            likes
+          });
+  
+          console.log(img_url);
+
+          return response.status(201).json(post);
+        }
+      });
     }catch(err){
       console.log(err)
       return response.status(400).send({error: 'Error creating new Post'})
@@ -82,13 +106,27 @@ module.exports = {
     try{
       const {id} = request.params;
 
-      const post = await Post.findById(id);
+      const idUser = request.userId;
+      
+     User.findOne({'_id': idUser}, 'type', async function (err, data){
+     if(err) return handleError(err);
 
-      post.likes++;
+      const type = data.type;
 
-      await Post.findByIdAndUpdate(id, post);
+      if(type !== 'student')
+        return response.status(400).send({error: 'Only student can like a post.'})
+      else{
+        const post = await Post.findById(id);
 
-      return response.json({"likes" : post.likes})
+        post.likes++;
+
+        await Post.findByIdAndUpdate(id, post);
+
+        return response.json({"likes" : post.likes});
+      }
+     });
+
+      
 
     }catch(err){
       console.log(err);

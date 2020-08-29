@@ -1,5 +1,5 @@
 const Post = require('../models/Post');
-const Student = require('../models/Student');
+const User = require('../models/User');
 
 
 module.exports = {
@@ -10,12 +10,12 @@ module.exports = {
       
       const post = await Post.findById(id);
    
-      const student = await Student.findById(request.studentId);
+      const user = await User.findById(request.userId);
   
       const comment = {
-        author: request.studentId,
+        author: request.userId,
         text: text,
-        nameAuthor: student.name
+        nameAuthor: user.name
       }
 
       post.comments.push(comment);

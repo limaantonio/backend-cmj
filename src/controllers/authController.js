@@ -1,4 +1,6 @@
-const Teacher = require('../models/Teacher');
+const User = require('../models/User');
+
+
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
@@ -18,10 +20,10 @@ module.exports = {
     const {email} = request.body;
 
     try{
-      if(await Teacher.findOne({email})){
-        return response.status(400).send({error: 'Teacher already exists'})
+      if(await User.findOne({email})){
+        return response.status(400).send({error: 'User already exists'})
       }
-      const user = await Teacher.create(request.body);
+      const user = await User.create(request.body);
 
       user.password = undefined;
 
@@ -39,12 +41,17 @@ module.exports = {
      
       const {email, password} = request.body;
 
-     const user = await Teacher.findOne({email}).select('+password');
+     const user = await User.findOne({email}).select('+password');
      
 
      if(!user){
-       return response.status(400).send({error: 'Teacher not found'})
+       return response.status(400).send({error: 'User not found'})
      }
+
+     
+
+  
+
 
      if(!await bcrypt.compare(password, user.password)){
       return response.status(400).send({error: 'Invalid password'})
@@ -53,8 +60,8 @@ module.exports = {
      user.password = undefined;
 
      response.send({
-       user,
-       token: generateToken({id: user.id})
+       user: user,
+       token: generateToken({id: user.id, type: user.type})
     })
    },
 
@@ -62,16 +69,16 @@ module.exports = {
      const {email} = request.body;
 
      try{
-      const user = await Teacher.findOne({email});
+      const user = await User.findOne({email});
 
       if(!user)
-        response.status(400).send({erro: 'Teacher not found'});
+        response.status(400).send({erro: 'User not found'});
       
         const token = crypto.randomBytes(20).toString('hex');
         const now = new Date();
         now.setHours(now.getHours() + 1);
 
-        await Teacher.findByIdAndUpdate(user.id, {
+        await User.findByIdAndUpdate(user.id, {
           '$set': {
             passwordResetToken: token,
             passwordResetExpires: now,
@@ -99,10 +106,10 @@ module.exports = {
      const {email, token, password} = request.body;
 
      try{
-      const user = await Teacher.findOne({email}).select('+passwordResetToken passwordResetExperis');
+      const user = await User.findOne({email}).select('+passwordResetToken passwordResetExperis');
 
       if(!user){
-        return response.status(400).send({error: 'Teacher not found'})
+        return response.status(400).send({error: 'User not found'})
       }
       if(token !== user.passwordResetToken)
         return response.status(400).send({erros: 'Token invalid.'});

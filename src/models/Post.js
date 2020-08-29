@@ -20,7 +20,7 @@ const PostSchema = new mongoose.Schema({
   comments:[{
       author: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student',
+        ref: 'User',
         require: true,
       },
       nameAuthor:{
@@ -38,7 +38,7 @@ const PostSchema = new mongoose.Schema({
 
   teacher: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Teacher',
+    ref: 'User',
     require: true,
   },
 
